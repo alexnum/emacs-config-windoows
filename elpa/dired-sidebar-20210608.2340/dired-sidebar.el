@@ -884,6 +884,7 @@ Set font to a variable width (proportional) in the current buffer."
         (setcdr (assq frame dired-sidebar-alist) buffer)
       (push `(,frame . ,buffer) dired-sidebar-alist))))
 
+;;;###autoload
 (defun dired-sidebar-showing-sidebar-p (&optional f)
   "Whether F or selected frame is showing a sidebar.
 

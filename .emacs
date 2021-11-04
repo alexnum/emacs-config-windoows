@@ -48,8 +48,13 @@
    t))
 
 (add-to-list 'load-path "C:\\Users\\Alessandro\\AppData\\Roaming\\.emacs.d\\sidebar.el")
-(require 'sidebar)
-(global-set-key (kbd "C-x C-a") 'sidebar-buffers-open)
+(add-to-list 'load-path "C:\\Users\\Alessandro\\AppData\\Roaming\\.emacs.d\\packages\\ibuffer-sidebar")
+
+
+
+(require 'ibuffer-sidebar)
+;;(global-set-key (kbd "C-x C-a") 'sidebar-buffers-open)
+(global-set-key (kbd "C-x C-a") (lambda () (interactive) (when (dired-sidebar-showing-sidebar-p) (dired-sidebar-hide-sidebar) ) (ibuffer-sidebar-show-sidebar) (pop-to-buffer (ibuffer-sidebar-buffer)) ))
 
 (setq js-indent-level 4)
 (defun my-js-mode-hook ()
@@ -62,7 +67,9 @@
 
 
 
-(global-set-key (kbd "C-x C-f") 'dired-sidebar-toggle-sidebar)
+(global-set-key (kbd "C-x C-f") (lambda () (interactive) (when (ibuffer-sidebar-showing-sidebar-p) (ibuffer-sidebar-hide-sidebar) ) (dired-sidebar-show-sidebar) (dired-sidebar-jump-to-sidebar) ))
+
+
 (add-hook 'dired-sidebar-mode-hook
             (lambda ()
               (unless (file-remote-p default-directory)
@@ -83,6 +90,12 @@
 )
 
 (add-hook 'dired-sidebar-mode-hook 'my-sidebar-mode-hook)
+
+(defun my-ibuffer-sidebar-mode-hook ()
+  (local-set-key (kbd "C-x C-f") (lambda () (interactive) (when (ibuffer-sidebar-showing-sidebar-p) (ibuffer-sidebar-hide-sidebar) ) (dired-sidebar-show-sidebar) (dired-sidebar-jump-to-sidebar) ))
+)
+
+(add-hook 'ibuffer-sidebar-mode-hook 'my-ibuffer-sidebar-mode-hook)
 
 ;;dired-sidebar-up-directory
 
