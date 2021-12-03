@@ -12,6 +12,9 @@
 (setq exec-path '(unixutils-bin git-bin node-bin)))) 
 
 (setq exec-path (append exec-path '("D:\\Users\\Alessandro\\AppData\\Roaming\\nvm\\v12.9.0")))
+(setq exec-path (append exec-path '("C:\\Program Files\\Go\\bin")))
+(setq exec-path (append exec-path '("D:\\cygwin64\\bin")))
+
 
 ;; Added by Package.el.  This must come before configurations of
 ;; installed packages.  Don't delete this line.  If you don't want it,
@@ -29,7 +32,7 @@
  '(custom-enabled-themes (quote (deeper-blue)))
  '(package-selected-packages
    (quote
-    (tern-auto-complete tern tide company dired-sidebar yaml-mode nginx-mode ng2-mode rmsbolt rjsx-mode projectile frame-local s ov dash-functional)))
+    (go-autocomplete go-mode vue-mode tern-auto-complete tern tide company dired-sidebar yaml-mode nginx-mode ng2-mode rmsbolt rjsx-mode projectile frame-local s ov dash-functional)))
  '(tool-bar-mode nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -93,6 +96,7 @@
 
 (defun my-ibuffer-sidebar-mode-hook ()
   (local-set-key (kbd "C-x C-f") (lambda () (interactive) (when (ibuffer-sidebar-showing-sidebar-p) (ibuffer-sidebar-hide-sidebar) ) (dired-sidebar-show-sidebar) (dired-sidebar-jump-to-sidebar) ))
+  (local-set-key (kbd "RET") 'ibuffer-visit-buffer-other-window)
 )
 
 (add-hook 'ibuffer-sidebar-mode-hook 'my-ibuffer-sidebar-mode-hook)
@@ -125,3 +129,29 @@
 (add-hook 'typescript-mode-hook #'setup-tide-mode)
 
 (add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-mode))
+(put 'dired-find-alternate-file 'disabled nil)
+
+
+(eval-after-load 'ibuffer
+   '(defun ibuffer-visit-buffer-other-window ()
+  (interactive)
+  (let ((buf (ibuffer-current-buffer t)))
+	(let ((lastwin (get-mru-window)))
+	  (let ((curwin (selected-window)))
+	    (select-window lastwin)
+	    (switch-to-buffer buf)
+	    (select-window curwin))))))
+
+;; Ajustes para Golang
+(defun my-go-mode-hook ()
+  ; Call Gofmt before saving                                                    
+  (add-hook 'before-save-hook 'gofmt-before-save)
+  ; Godef jump key binding                                                      
+  (local-set-key (kbd "M-.") 'godef-jump)
+  (local-set-key (kbd "M-*") 'pop-tag-mark)
+  )
+(add-hook 'go-mode-hook 'my-go-mode-hook)
+
+
+(with-eval-after-load 'go-mode
+   (require 'go-autocomplete))
